@@ -1,0 +1,40 @@
+#include <stdio.h>
+#include <stdbool.h>
+
+bool canConstruct(char ransomNote[], char magazine[]) {
+
+    int i, j;
+
+    for(i = 0; ransomNote[i] != '\0'; i++) {
+
+        int found = 0;
+
+        for(j = 0; magazine[j] != '\0'; j++) {
+
+            if(ransomNote[i] == magazine[j]) {
+                found = 1;
+                magazine[j] = '*';
+                break;
+            }
+        }
+
+        if(found == 0) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+int main() {
+
+    char ransomNote[] = "aa";
+    char magazine[] = "aab";
+
+    if(canConstruct(ransomNote, magazine))
+        printf("True\n");
+    else
+        printf("False\n");
+
+    return 0;
+}
