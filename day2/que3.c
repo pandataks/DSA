@@ -1,48 +1,73 @@
 #include <stdio.h>
-#include <string.h>
+#include <stdlib.h>
+#include <stdbool.h>
 
-void findAnagrams(char s[], char p[]) {
+struct ListNode {
+    int val;
+    struct ListNode *next;
+};
 
-    int n = strlen(s);
-    int m = strlen(p);
+struct ListNode* reverse(struct ListNode* head) {
+    struct ListNode *prev = NULL;
 
-    if(m > n) {
-        printf("No anagrams\n");
-        return;
+    while (head != NULL) {
+        struct ListNode *next = head->next;
+        head->next = prev;
+        prev = head;
+        head = next;
     }
 
-    for(int i = 0; i <= n - m; i++) {
+    return prev;
+}
 
-        int a[26] = {0};
-        int b[26] = {0};
+bool isPalindrome(struct ListNode* head) {
+    if (head == NULL || head->next == NULL)
+        return true;
 
-        for(int j = 0; j < m; j++) {
-            a[p[j] - 'a']++;
-            b[s[i + j] - 'a']++;
-        }
+    struct ListNode *slow = head;
+    struct ListNode *fast = head;
 
-        int ok = 1;
-
-        for(int k = 0; k < 26; k++) {
-            if(a[k] != b[k]) {
-                ok = 0;
-                break;
-            }
-        }
-
-        if(ok == 1) {
-            printf("%d ", i);
-        }
+    while (fast->next != NULL && fast->next->next != NULL) {
+        slow = slow->next;
+        fast = fast->next->next;
     }
+
+    struct ListNode *secondHalf = reverse(slow->next);
+
+    struct ListNode *p1 = head;
+    struct ListNode *p2 = secondHalf;
+
+    while (p2 != NULL) {
+        if (p1->val != p2->val)
+            return false;
+
+        p1 = p1->next;
+        p2 = p2->next;
+    }
+
+    return true;
 }
 
 int main() {
+    struct ListNode *n1 = malloc(sizeof(struct ListNode));
+    struct ListNode *n2 = malloc(sizeof(struct ListNode));
+    struct ListNode *n3 = malloc(sizeof(struct ListNode));
+    struct ListNode *n4 = malloc(sizeof(struct ListNode));
 
-    char s[] = "cbaebabacd";
-    char p[] = "abc";
+    n1->val = 1;
+    n2->val = 2;
+    n3->val = 2;
+    n4->val = 1;
 
-    printf("Anagram indices: ");
-    findAnagrams(s, p);
+    n1->next = n2;
+    n2->next = n3;
+    n3->next = n4;
+    n4->next = NULL;
+
+    if (isPalindrome(n1))
+        printf("True\n");
+    else
+        printf("False\n");
 
     return 0;
 }
