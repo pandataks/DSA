@@ -1,38 +1,39 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
-void solve(char **ans, int *size, char *cur, int pos, int open, int close, int n) {
-    if (pos == 2 * n) {
-        cur[pos] = '\0';
-        ans[*size] = (char *)malloc((2 * n + 1) * sizeof(char));
-        strcpy(ans[*size], cur);
-        (*size)++;
-        return;
+int largestRectangleArea(int* heights, int heightsSize) {
+    int stack[100000];
+    int top = -1;
+    int maxArea = 0;
+
+    for (int i = 0; i <= heightsSize; i++) {
+
+        int currHeight = (i == heightsSize) ? 0 : heights[i];
+
+        while (top != -1 && heights[stack[top]] > currHeight) {
+            int h = heights[stack[top--]];
+
+            int width;
+            if (top == -1)
+                width = i;
+            else
+                width = i - stack[top] - 1;
+
+            int area = h * width;
+
+            if (area > maxArea)
+                maxArea = area;
+        }
+
+        stack[++top] = i;
     }
 
-    if (open < n) {
-        cur[pos] = '(';
-        solve(ans, size, cur, pos + 1, open + 1, close, n);
-    }
-
-    if (close < open) {
-        cur[pos] = ')';
-        solve(ans, size, cur, pos + 1, open, close + 1, n);
-    }
+    return maxArea;
 }
 
 int main() {
-    int n = 3;
-    char *ans[100];
-    int size = 0;
-    char cur[20];
+    int heights[] = {2, 1, 5, 6, 2, 3};
 
-    solve(ans, &size, cur, 0, 0, 0, n);
-
-    for (int i = 0; i < size; i++) {
-        printf("%s\n", ans[i]);
-    }
+    printf("%d\n", largestRectangleArea(heights, 6));
 
     return 0;
 }
